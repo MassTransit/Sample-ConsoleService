@@ -20,13 +20,10 @@ namespace SampleService
                     config.AddEnvironmentVariables();
 
                     if (args != null)
-                    {
                         config.AddCommandLine(args);
-                    }
                 })
                 .ConfigureServices((hostContext, services) =>
                 {
-                    services.AddOptions();
                     services.Configure<AppConfig>(hostContext.Configuration.GetSection("AppConfig"));
 
                     services.AddMassTransit(cfg => { cfg.AddBus(ConfigureBus); });
