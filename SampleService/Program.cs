@@ -6,6 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using SampleService.Contracts;
 
 namespace SampleService
 {
@@ -26,9 +27,15 @@ namespace SampleService
                 {
                     services.Configure<AppConfig>(hostContext.Configuration.GetSection("AppConfig"));
 
-                    services.AddMassTransit(cfg => { cfg.AddBus(ConfigureBus); });
+                    services.AddMassTransit(cfg =>
+                    {
+                        cfg.AddConsumer<TimeConsumer>();
+                        cfg.AddBus(ConfigureBus);
+                        cfg.AddRequestClient<IsItTime>();
+                    });
 
                     services.AddSingleton<IHostedService, MassTransitConsoleHostedService>();
+                    services.AddSingleton<IHostedService, CheckTheTimeService>();
                 })
                 .ConfigureLogging((hostingContext, logging) =>
                 {
@@ -50,6 +57,8 @@ namespace SampleService
                     h.Username(options.Username);
                     h.Password(options.Password);
                 });
+
+                cfg.ConfigureEndpoints(provider);
             });
         }
     }
