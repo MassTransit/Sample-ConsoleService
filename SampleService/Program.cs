@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Net.Security;
@@ -21,6 +22,8 @@ namespace SampleService
 
         static async Task Main(string[] args)
         {
+            var isService = !(Debugger.IsAttached || args.Contains("--console"));
+
             var builder = new HostBuilder()
                 .ConfigureAppConfiguration((hostingContext, config) =>
                 {
@@ -50,7 +53,14 @@ namespace SampleService
                     logging.AddConsole();
                 });
 
-            await builder.RunConsoleAsync();
+            if (isService)
+            {
+                await builder.RunAsServiceAsync();
+            }
+            else
+            {
+                await builder.RunConsoleAsync();
+            }
         }
 
         static IBusControl ConfigureBus(IServiceProvider provider)
