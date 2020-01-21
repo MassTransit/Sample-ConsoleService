@@ -1,6 +1,6 @@
 # Sample MassTransit .NET Core Service
 
-In this sample, a .NET core service is created (using .NET Core 2.2) which supports logging, configuration, and dependency injection, along with a basic MassTransit configuration to connect to RabbitMQ.
+In this sample, a .NET core service is created (using .NET Core 3.1) which supports logging, configuration, and dependency injection, along with a basic MassTransit configuration to connect to RabbitMQ.
 
 In the past, this would have been accomplished using Topshelf, however, at this point Topshelf is really specific to Windows and isn't needed with .NET Core to create Linux/Mac services.
 

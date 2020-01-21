@@ -44,8 +44,8 @@ namespace SampleService
                         cfg.AddRequestClient<IsItTime>();
                     });
 
-                    services.AddSingleton<IHostedService, MassTransitConsoleHostedService>();
-                    services.AddSingleton<IHostedService, CheckTheTimeService>();
+                    services.AddHostedService<MassTransitConsoleHostedService>();
+                    services.AddHostedService<CheckTheTimeService>();
                 })
                 .ConfigureLogging((hostingContext, logging) =>
                 {
@@ -55,7 +55,8 @@ namespace SampleService
 
             if (isService)
             {
-                await builder.RunAsServiceAsync();
+                await builder.UseWindowsService().Build().RunAsync();
+                //await builder.UseSystemd().Build().RunAsync(); // For Linux, replace the nuget package: "Microsoft.Extensions.Hosting.WindowsServices" with "Microsoft.Extensions.Hosting.Systemd", and then use this line instead
             }
             else
             {
