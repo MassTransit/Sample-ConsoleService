@@ -1,7 +1,6 @@
 using System.Threading;
 using System.Threading.Tasks;
 using MassTransit;
-using MassTransit.Logging.Tracing;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
@@ -11,22 +10,23 @@ namespace SampleService
         IHostedService
     {
         readonly IBusControl _bus;
+        readonly ILogger _logger;
 
         public MassTransitConsoleHostedService(IBusControl bus, ILoggerFactory loggerFactory)
         {
             _bus = bus;
-
-            if (loggerFactory != null && MassTransit.Logging.Logger.Current.GetType() == typeof(TraceLogger))
-                MassTransit.ExtensionsLoggingIntegration.ExtensionsLogger.Use(loggerFactory);
+            _logger = loggerFactory.CreateLogger<MassTransitConsoleHostedService>();
         }
 
         public async Task StartAsync(CancellationToken cancellationToken)
         {
+            _logger.LogInformation("Starting bus");
             await _bus.StartAsync(cancellationToken).ConfigureAwait(false);
         }
 
         public Task StopAsync(CancellationToken cancellationToken)
         {
+            _logger.LogInformation("Stopping bus");
             return _bus.StopAsync(cancellationToken);
         }
     }
